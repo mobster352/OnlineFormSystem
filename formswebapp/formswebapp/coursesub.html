@@ -1,0 +1,307 @@
+<html>
+<head>
+<title>Course Substitution Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link rel="stylesheet" type="text/css" href="styles/tasks4.css" media="screen"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="scripts/jquery-2.0.3.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<A NAME="top">
+<script>
+$(document).ready( function() {
+	//alert("ready");
+	var studid;
+	//alert(document.cookie);
+	var c = document.cookie;
+	//alert(c);
+	$.ajax({ 
+		url: "http://localhost:8080/formswebapp/resources/user/" + c,
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			/**var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "\n" + "Local address: " + stud.streetAddress
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip;
+			+ "\n" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;**/
+			studid = stud.id;
+			//$("#studentinfo").html(output);
+			$("#firstName").append(stud.firstName);
+			$("#lastName").append(stud.lastName);
+			$('#middleName').append(stud.middleName);
+			$('#id').append(stud.id);
+			$('#telephone').append(stud.telephone);
+			$('#streetAddress').append(stud.streetAddress);
+			$('#city').append(stud.city);
+			$('#state').append(stud.state);
+			$('#zip').append(stud.zip);
+			$('#major').append(stud.major);
+			$('#minor').append(stud.minor);
+			$('#catalogYear').append(stud.catalogYear);
+			
+			
+			
+			
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+
+	$("#submit").click(function(){
+		var sourceCourse1 = document.getElementById("sourceCourse1").value;
+		var replacementCourse1 = document.getElementById("replacementCourse1").value;
+		var sourceCourse2 = document.getElementById("sourceCourse2").value;
+		var replacementCourse2 = document.getElementById("replacementCourse2").value;
+		var sourceCourse3 = document.getElementById("sourceCourse3").value;
+		var replacementCourse3 = document.getElementById("replacementCourse3").value;
+
+		var theUrl = "http://localhost:8080/formswebapp/resources/courseSubForm";
+
+		var theData = "sourceCourse1="+sourceCourse1+"&"+"replacementCourse1="+replacementCourse1+"&"
+			+"sourceCourse2="+sourceCourse2+"&"+"replacementCourse2="+replacementCourse2+"&"
+			+"sourceCourse3="+sourceCourse3+"&"+"replacementCourse3="+replacementCourse3;
+	
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			datatype: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+		});
+	});
+	
+	 $("#btnLogout").click(function() {
+                        alert("Logging out...");
+						var c = document.cookie;
+                        var theData = c;
+
+						document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+						
+                        //alert("Sending: " + theData);
+                        $.ajax({
+                            url: "http://localhost:8080/formswebapp/resources/authsession/" + c,
+                            type: "DELETE",
+                            dataType: "text",
+                            data: theData,
+							
+							
+							
+                            success: function(result, status, jqxhr) {
+                                //alert("success: " + status);
+                                var userArray = JSON.parse(result);
+                                //alert(userArray);
+                                var output = "<h3>Log Out</h3>";
+                                window.location.replace("login.html")
+
+                             $('.HiddenInput').val(output);
+                            },
+                            error: function(xhr, status, errorThrown) {
+                                //alert("error: " + status + " e: " + errorThrown);
+                            }
+
+                        });
+                    });
+});
+</script>
+</head>
+<body>
+	<!--Header-->
+	<div class = "navbar navbar-inverse navbar-static-top">
+		<div class="container">
+			<div class = "navbar-header">
+				<div class="tut-container-img">
+						<img class="img-responsive" src="cculogo.png" alt=""></a>
+					</div>
+						
+				<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+				</button><!--Create button for mobile site-->
+			</div>
+			<div class = "collapse navbar-collapse navHeaderCollapse">
+				<ul class = "nav navbar-nav navbar-right">
+					<li><a href = "user.html">Home</a></li>
+					
+					<li class = "dropdown">
+						<a href = "#" class = "dropdown-toggle" data-toggle ="dropdown">All Forms<b class="caret"></b></a>
+						<ul class = "dropdown-menu">
+							<li><a href = "courserepeat.html">Course Repeat Form</a></li>
+							<li><a href = "coursesub.html">Course Substitution Form</a></li>
+							<li><a href = "transcript.html"> Transcript Form</a></li>
+							<li><a href = "specialpermission.html"> Special Permission Form</a></li>
+						</ul>
+					</li>
+					
+					<li class = "dropdown">
+						<a href = "#" class = "dropdown-toggle" data-toggle ="dropdown">Social Media <b class="caret"></b></a>
+						<ul class = "dropdown-menu">
+							<li><a href = "http://twitter.com">Twitter</a></li>
+							<li><a href = "http://facebook.com">Facebook</a></li>
+							<li><a href = "https://plus.google.com/">Google+</a></li>
+							<li><a href = "http://instagram.com">Instagram</a></li>
+						</ul>
+					</li>
+					<li><a href = "#about" data-toggle ="modal">About</a></li>
+					<li><a href = "#contact" data-toggle ="modal">Contact</a></li>
+					<li>
+						<a class="navbar-brand" href="setting.html">
+							<i class="glyphicon glyphicon-cog"></i>
+						</a>
+					</li>
+					<li>
+						<button type="button" id="btnLogout" class="btn btn-default navbar-btn">Logout</button
+					</li>
+					<li>
+						<form class="navbar-form" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+							<div class="input-group-btn">
+								<button class="btn btn-default" type="search"><i class="glyphicon glyphicon-search"></i></button>
+							</div>
+						</div>
+						</form>
+						
+					</li>
+
+				</ul>
+			</div>	
+		</div>
+	</div>
+	
+	<div class = "container">
+		<div class = "row">
+			<div class = "col-lg-9">
+				<div class ="panel panel-default">
+					<div class ="panel-body">
+					<p></p>
+					<h3><b>Student Information</b></h3>
+					<hr>
+					<div=class="container">
+						<div class = "column">
+							<div class = "col-xs-6 col-md-4">
+								<div id="firstName"><b>First Name:</b>&nbsp </div>	
+								<div id="lastName"><b>Last Name:</b>&nbsp</div>
+								<div id="middleName"><b>Middle Name:</b>&nbsp</div>	
+								<div id="id"><b>Id:</b>&nbsp</div>
+								<div id="telephone"><b>Telephone:</b>&nbsp</div>	
+							</div>
+							<div class = "col-xs-6 col-md-4">
+								<div id="streetAddress"><b>Street Address:</b>&nbsp</div>
+								<div id="city"><b>City:</b>&nbsp</div>	
+								<div id="state"><b>State:</b>&nbsp</div>
+								<div id="zip"><b>Zip:</b>&nbsp</div>	
+								<div id="major"><b>Major:</b>&nbsp</div>
+								<div id="minor"><b>Minor:</b>&nbsp</div>	
+								<div id="catalogYear"><b>Catalog:</b>&nbsp</div>
+							</div>
+						</div>			
+					</div>	
+				</div>
+			</div>
+		</div>	
+	</div>
+		
+	
+	
+	
+	
+	<div class = "container">
+		<div class = "row">
+			<div class = "col-lg-9">
+				<div class ="panel panel-default">
+					<div class ="panel-body">
+						<div class= "page-header">
+						<p></p>
+						<h3><b>Course Substitutions Within the Major or Minor</b></h3>
+						<hr>
+						<br>
+					
+						<form class="form-horizontal" role="form" autocomplete="on" >
+							<div class="form-group">
+							<label for="sourceCourse1" class="col-lg-2 control-label">* Substitute </label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="sourceCourse1" value=""required>								
+								</div>
+							<label for="replacemenetCourse1" class="col-lg-2 control-label">* Required Course </label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="replacemenetCourse1" value=""required>
+								</div>
+							</div>
+							<hr>
+							<div class="form-group">
+							<label for="sourceCourse2" class="col-lg-2 control-label">Substitute</label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="sourceCourse2" value=""required>
+								</div>
+							<label for="replacemenetCourse2" class="col-lg-2 control-label">Required Course </label>	
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="replacemenetCourse2" value=""required>
+								</div>
+							</div>
+							<hr>
+							<div class="form-group">
+							<label for="sourceCourse2" class="col-lg-2 control-label">Substitute</label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="sourceCourse3" value=""required>
+								</div>
+							<label for="replacemenetCourse3" class="col-lg-2 control-label">Required Course </label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="replacemenetCourse3" value=""required>
+								</div>
+							</div>
+							
+							
+							<p>(*) Indicates required field.</p>
+							<div class = "modal-footer">
+							<!--<a class = "btn btn-default" data-dismiss = "modal">Close</a>-->
+								<button class = "btn btn-default" type="reset">Clear</button>
+							<button type="button" id="submit" >Submit</button>
+						
+							</div>						  
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<div class = "col-lg-3">
+				<div class="list-group">
+					<a href ="#" class ="list-group-item">
+						<p class= "list-group-item-text">
+						
+							<img src="img/chant.jpg">
+						
+						</p>
+					</a>
+				</div>
+			</div>
+	</div>
+	<div id= "btt">	
+	<A HREF="#top" class="btn btn-default">Back To Top</A>
+	</div>
+	<!--Footer-->
+	<div class = "navbar navbar-inverse navbar-fixed-bottom">
+		<div>
+			<p class = "navbar-text pull-right">2014 Coastal Carolina University | P.O. Box 261954, Conway, SC 29528-6054 USA | +1 843-347-3161</p>
+		</div>
+	</div>
+	
+</body>
+</html>

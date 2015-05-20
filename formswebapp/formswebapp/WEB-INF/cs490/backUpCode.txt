@@ -1,0 +1,191 @@
+public User[] updateUser(int id, User theUserToUpdate)throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+		
+		String userNameUpdate = theUserToUpdate.getUserName();
+		String userPasswordUpdate = theUserToUpdate.getUserPassword();
+		
+		System.out.println("facadeid:"+id);
+		System.out.println("facadeN:"+userNameUpdate);
+		System.out.println("facadeP:"+userPasswordUpdate);
+			
+			
+		String oldName=null;
+		String oldPassword =null;
+		
+		PreparedStatement stmt = con.prepareStatement("SELECT userName, userPassword FROM user WHERE id=?");
+		stmt.setInt(1,id);
+		ResultSet rs = stmt.executeQuery();
+		int index = 0;
+		User[] userArray = new User[100];
+		
+		
+		while(rs.next()){
+			
+			oldName = rs.getString("userName");
+			oldPassword = rs.getString("userPassword");
+			
+		}
+		System.out.println("oldN:"+oldName);
+		System.out.println("oldP:"+oldPassword);
+		
+		if(userNameUpdate.isEmpty() && userPasswordUpdate.isEmpty()){}
+		if(!userNameUpdate.isEmpty() && userPasswordUpdate.isEmpty())
+		{
+			PreparedStatement pstmt = con.prepareStatement("UPDATE user SET userName=?, userPassword=? WHERE id=?");
+			pstmt.setString(1,userNameUpdate);
+			pstmt.setString(2,oldPassword);
+			pstmt.setInt(3,id);
+			pstmt.executeUpdate();
+		}
+		if(userNameUpdate.isEmpty() && !userPasswordUpdate.isEmpty())
+		{
+			PreparedStatement pstmt = con.prepareStatement("UPDATE user SET userName=?, userPassword=? WHERE id=?");
+			pstmt.setString(1,oldName);
+			pstmt.setString(2,userPasswordUpdate);
+			pstmt.setInt(3,id);
+			pstmt.executeUpdate();
+		}
+		if(!userNameUpdate.isEmpty() && !userPasswordUpdate.isEmpty())
+		{
+			PreparedStatement pstmt = con.prepareStatement("UPDATE user SET userName=?, userPassword=? WHERE id=?");
+			pstmt.setString(1,userNameUpdate);
+			pstmt.setString(2,userPasswordUpdate);
+			pstmt.setInt(3,id);
+			pstmt.executeUpdate();
+		}
+		
+		
+		User userObject = new User(id,userNameUpdate,userPasswordUpdate);
+		userArray[index] = userObject;
+		index++;
+		
+		if(index > 0){
+			userArray = Arrays.copyOf(userArray,index);
+			return userArray;
+		}
+		else{
+			return null;
+		}
+		
+	}
+	
+	
+	
+	
+	
+	public User[] createUser(User theUserToAdd)throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+		
+		String userName = theUserToAdd.getUserName();
+		String userPassword = theUserToAdd.getUserPassword();
+		
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO user (userName,userPassword) VALUES(?,?)");
+		pstmt.setString(1,userName);
+		pstmt.setString(2,userPassword);
+		int res = pstmt.executeUpdate();
+		
+		User[] userArray = new User[100];
+		int index = 0;
+					
+		if(res == 1){
+			PreparedStatement retrieveStmt = con.prepareStatement("SELECT * FROM user WHERE "+ "userName=?" + " AND userPassword=?" );
+								
+			retrieveStmt.setString(1,userName);
+			retrieveStmt.setString(2,userPassword);
+			ResultSet rs = retrieveStmt.executeQuery();
+				
+			while(rs.next()){
+				int theId4 = rs.getInt("id");
+				String userName1 = rs.getString("userName");
+				String userPassword1 = rs.getString("userPassword");
+
+				User userObject = new User(theId4,userName1,userPassword1);
+				
+				
+				userArray[index] = userObject;
+				index++;
+			}
+			if(index > 0){
+				userArray = Arrays.copyOf(userArray,index);
+			}
+			return userArray;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	
+	
+	@POST
+	@Produces("text/plain")
+	@Consumes("application/x-www-form-urlencoded") //web service expected from data
+	public Response createUser(MultivaluedMap<String,String> formFields) throws SQLException, ClassNotFoundException, NamingException {
+		UserFacade userFacade = UserFacade.getInstance();
+		String userName = formFields.getFirst("newName");
+		String userPassword = formFields.getFirst("newPassword");
+		String token = formFields.getFirst("token");
+		
+		System.out.println(token);
+		
+		int check = userFacade.checkSession(token);
+		if(check == 1){
+	
+			System.out.println("Get Here?");
+		
+		//System.out.println("userName"+userName);//empty for some reason
+		//System.out.println("userPassword"+userPassword);
+		
+		User userToAdd = new User(userName,userPassword);
+		User[] resultArray = userFacade.createUser(userToAdd);
+		
+		
+		
+		if(resultArray != null){
+			return Response.status(201).build();
+		}
+		else{
+			return Response.status(404).build();	
+		}//end else
+		
+		}
+		else{
+			return Response.status(401).build();
+		}
+	}//End method
+	
+	
+	
+	
+	
+	@Path("/{userid}")
+	@PUT
+	@Produces("text/plain")
+	@Consumes("application/x-www-form-urlencoded")
+	public Response updateUser(@PathParam("userid") int id, MultivaluedMap<String,String> formFields) throws SQLException, ClassNotFoundException, NamingException {
+		UserFacade userFacade = UserFacade.getInstance();
+			
+		String userNameUpdate = formFields.getFirst("username");
+		String userPasswordUpdate = formFields.getFirst("password");
+		
+		System.out.println("servicesid:"+id);
+		System.out.println("ServicesN:"+userNameUpdate);
+		System.out.println("ServicesP:"+userPasswordUpdate);
+		
+		User userToUpdate = new User(userNameUpdate,userPasswordUpdate);
+
+		User[] resultArray = userFacade.updateUser(id,userToUpdate);
+		
+		if(resultArray != null){
+			Gson theGsonObject = new Gson();
+			String result = theGsonObject.toJson(resultArray);
+			ResponseBuilder rb = Response.ok(result,MediaType.TEXT_PLAIN);
+			
+			rb.status(201);
+			return rb.build();
+		}
+		else{
+			return Response.status(404).build();	
+		}//end else
+	}//End method
+	

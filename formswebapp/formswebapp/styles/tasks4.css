@@ -1,0 +1,179 @@
+body{
+	margin-bottom: 125px;
+	background-color:#006F71;
+}
+
+hr{
+	width: 75%;
+	background-color: black;;
+}
+h2{
+	text-align:center;
+	color:white;
+}
+h3{
+	text-align: center;
+}
+li,ul,ol{
+	color: white;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+
+.page-header{
+	margin-top: 0;
+}
+
+.panel-body{
+	padding-top: 0;
+}
+
+.featuredImg{
+	width: 100%;
+	margin-bottom: 
+}
+.navbar-form{
+	padding-left: 25px;
+	padding-right:25px;
+}
+
+.form-group{
+	padding-left:10px;
+}
+.checkbox{
+	padding-left:20px;
+}
+
+.form{
+	padding-top: 10px;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+.tut-container 
+{
+	border: 1px solid #eaeaea;
+	background-color: white;
+	z-index: 1;
+	padding-top: 0;
+	margin-bottom: 100px;
+}
+
+
+.tut-container-content {
+margin: 20px;
+}
+
+.btn-group{
+margin: 20px;
+}
+
+#footer {
+text-align: center;
+}
+
+.jumbotron {
+background-color: #006F71;
+color: white;
+
+}
+
+.tbody
+{
+display: block;
+}
+
+.table  
+{
+text-align:center;
+width: 50%;
+background-color: white;
+margin: auto;
+
+}
+.studentinfo{
+	padding-left: 50px;
+}
+
+#btnLogout
+{
+	margin-left:10px;
+}
+
+#footerlinks
+{
+	text-align: center;
+}
+
+/* unvisited link */
+a{
+color: #222;
+}
+
+a:link {
+    color: #222;
+}
+
+/* mouse over link */
+a:hover {
+    color: #85865F;
+}
+
+/* selected link */
+a:active {
+    color: ;
+}
+.studentinfo{
+	margin-left:50px;
+}
+.jumbotron{
+background-color:#006F71;
+color: white;
+
+}
+
+img{
+width:100%;
+
+}
+.img-responsive{
+	margin: 0 auto;
+	width:100%;
+}
+
+
+@media all and (max-width: 600px) {
+    .img-responsive {
+        display: none;
+    }
+	img{
+		display: none;
+	}
+	#myCarousel{
+		display:none;
+	}
+	.list-group-item{
+		display:none;
+	}
+}
+
+@media all and (max-width: 800px){
+	.img-responsive {
+       	max-width:45%;	
+    }
+
+}
+
+#btt{
+	padding: 15px;
+}
+.navbar{
+	padding: 5px;
+}
+
+
+
+
+			
+

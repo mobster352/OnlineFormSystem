@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>Richard's Form Web Services</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+alert("running script");
+
+$("#btnAll").click(function() {
+	alert("clicked");
+	$.ajax( {
+		url: "http://localhost:8080/formswebapp/resources/ws2/forms",
+		type: "GET",
+		dataType: "text",
+	success: function(result) {
+		alert("success");
+		var formArray = JSON.parse(result);
+		alert(formArray);
+		var output="<h3>Form List</h3>";
+		output += "<ul>";
+		for(var i=0; i<formArray.length; i++)
+		{
+			output += "<li>" + formArray[i].name+ ": "+formArray[i].id+ ", " +formArray[i].semester+ ", " +formArray[i].year+ "</li>";
+		}	
+		output += "</ul>";
+		alert(output);
+		$("#p_retrieveAll").html(output); },
+	error:function(xhr) {
+		alert("error");
+		$("#p_retrieveAll").html("Error: "+xhr.status + " " +xhr.statusText);}
+	});
+});
+
+$("#btnOneId").click(function() {
+	alert("clicked");
+	var inputId=document.getElementById("t_formId").value;
+	var theUrl = "http://localhost:8080/formswebapp/resources/ws2/forms/"+inputId;
+	$.ajax( {
+		url: theUrl,
+		type: "GET",
+		dataType: "text",
+		success: function(result) {
+			alert("success");
+			$("#p_retrieveOneId").html(result); },
+		error:function(xhr) {
+			alert("error");
+			$("#p_retrieveOneId").html("Error: "+xhr.status+" "+xhr.statusText);}
+	});
+});
+
+$("#btnOneName").click(function() {
+	alert("clicked");
+	var inputName=document.getElementById("t_formName").value;
+	var theUrl ="http://localhost:8080/formswebapp/resources/ws2/forms/form?name="+inputName;
+	$.ajax( {
+		url: theUrl,
+		type: "GET",
+		dataType: "text",
+		success: function(result) {
+			alert("success");
+			$("#p_retrieveOneName").html(result); },
+		error:function(xhr) {
+			alert("error");
+			$("#p_retrieveOneName").html("Error:"+xhr.status+" "+xhr.statusText);}
+	});
+
+});
+
+
+
+});
+</script>
+</head>
+<body>
+<h3>Richard's Form Web Services</h3>
+<div id="retrieveAll">
+<button id="btnAll">Click to Retrieve All</button>
+<p id="p_retrieveAll">Form List Goes here</p></div>
+
+<div id="retrieveOneId">
+<input type="text" id="t_formId" value="type id here"/>
+<button id="btnOneId">Click to retrieve by Id</button>
+<p id="p_retrieveOneId">Form By Id Goes here</p></div>
+
+<div id="retrieveOneName">
+<input type="text" id="t_formName" value="type name here"/>
+<button id="btnOneName">Click to retrieve by Name</button>
+<p id="p_retrieveOneName"> Form By Name Goes here</p></div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	<Resource name="jdbc/formdb" auth="Container"
+	type="javax.sql.DataSource" username="root" password="csci330pass"
+	driverClassName="com.mysql.jdbc.Driver"
+	url="jdbc:mysql://localhost:3306/formdb"
+	maxActive="100" maxIdle="100"/>
+</Context>

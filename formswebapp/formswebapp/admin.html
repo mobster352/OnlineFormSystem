@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link rel="stylesheet" type="text/css" href="styles/tasks4.css" media="screen"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="scripts/jquery-2.0.3.js"></script>
+	<script src="js/bootstrap.js"></script>
+	
+	
+	
+</head>
+<body>
+<div id="createUser">
+			<h4> Create New User </h4>
+			<label for="t_userNameCreate">Name: </label>
+			<input type="text" id="t_userName" value="type username here" />
+			<br>
+
+			<label for="t_userPasswordCreate">Password: </label>
+			<input type="text" id="t_userPassword" value="type password here" />
+			<br>
+			<button id="btnCreateUser">Click to create user</button>
+			<p id="p_createUser"> Created User Goes Here</p>
+			<br>
+			<hr>
+		</div>
+		<div id="updateUser">
+			<h4> Update User </h4>
+			<form id="updateUser">
+				Enter User Id:
+				<input type="text" id="userId" value="1"> Update Username:
+				<input type="text" id="updateName" value=""> Update Password:
+				<input type="password" id="updatePass" value="">
+				<button type="button" id="updateBtn">Update User</button>
+				<p id="p_updateUser"> Updated Information goes here</p>
+			</form>
+			<hr>
+		</div>
+		<div id="searchUser">
+			<h4> Retrieve User</h4>
+			
+			<button id="btnSearchUser">Click to retrieve Student Information</button>
+
+			<p id="p_searchUser"> User by Id & Name Goes Here</p>
+			<hr>
+		</div>
+		<div id="deleteUser">
+			<h4> Delete User</h4>
+			<label for="t_userId2">User Id: </label>
+			<input type="text" id="t_userId2" value="type user id here" />
+			<button id="btnDeleteUser">Click to delete user by Id</button>
+			<p id="p_deleteUser"> User Deleted Goes Here</p>
+		</div>
+		
+		
+		<div class = "navbar navbar-inverse navbar-fixed-bottom">
+			<div class = "container">
+				<p class = "navbar-text pull-left"> Online Forms System</p>
+				<p class = "navbar-text pull-right"> Copyright Coastal Carolina University</p>
+			</div>
+		</div>
+</body>
+</html>

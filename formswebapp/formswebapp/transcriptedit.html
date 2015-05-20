@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Transcript Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link href  = "css/bootstrap.min.css" rel ="stylesheet">
+	<link rel="stylesheet" type="text/css" href="styles/tasks4.css" media="screen"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="scripts/jquery-2.0.3.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<A NAME="top">
+<script>
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+$(document).ready( function() {
+	alert("ready");
+	var mailnum = 1;
+	var studid;
+	var id = getParameterByName('id');
+	var c = document.cookie;
+
+	$.ajax({ 
+		url: "http://localhost:8080/formswebapp/resources/user/" + c,
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			/**var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "<br />" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "<br />" + "Local address: " + stud.streetAddress
+			+ "<br />" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip
+			+ "<br />" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;**/
+			studid = stud.id;
+			//$("#studentinfo").html(output);
+			$("#firstName").append(stud.firstName);
+			$("#lastName").append(stud.lastName);
+			$('#middleName').append(stud.middleName);
+			$('#id').append(stud.id);
+			$('#telephone').append(stud.telephone);
+			$('#streetAddress').append(stud.streetAddress);
+			$('#city').append(stud.city);
+			$('#state').append(stud.state);
+			$('#zip').append(stud.zip);
+			$('#major').append(stud.major);
+			$('#minor').append(stud.minor);
+			$('#catalogYear').append(stud.catalogYear);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+	$("#add").click(function(){
+		if(mailnum==3){
+			alert("mail full");
+			return;
+		}
+		mailnum = mailnum + 1;
+		$("#mailto2").append("Number of transcripts to be sent <input type='text' id='numtrans' value=''><br>");
+		$("#numtrans").set();
+		$("#mailto2").append("Name <input type='text' id='name' value=''><br>");
+		$("#name").set()
+		$("#mailto2").append("Address <input type='text' id='address' value=''><br>");
+		$("#address").set()
+		alert("mailnum: "+mailnum);
+	});
+
+	$.fn.set = function(){
+		return this.each(function(){
+			$(this).attr('id',this.id+mailnum);
+		});
+	};
+	
+	$("#remove").click(function(){
+		$("#mailto2").replaceWith("<div id='mailto2'></div>");
+		mailnum = 1;
+		alert("mailnum: "+mailnum);
+	});
+
+	
+	
+	$.ajax({
+		url: "http://localhost:8080/formswebapp/resources/transcript/" + id,
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+	
+			success: function(result,status,jqxhr) {
+			
+				var array1 = JSON.parse(result);
+				var array = array1[0];
+				
+			
+				$("#firsterm").val(array.);
+				$("#yearfirst").val(array.);
+				$("#toBeCompleted").val(array.);
+				$("#yearlast").val(array.);
+				$("#lastterm").val(array.);
+				
+				
+			
+				
+				
+			},
+			error: function(xhr, status, errorThrown) {
+					alert(xhr.status + " " + xhr.statusText);
+			}
+		});
+	
+	$("#submit").click(function(){
+		var firstterm = $("input[name=firstterm]:checked").val();
+		var lastterm = $("input[name=lastterm]:checked").val();
+		var toBeCompleted = document.getElementById("toBeCompleted").value;
+		var yearfirst = document.getElementById("yearfirst").value;
+		var yearlast = document.getElementById("yearlast").value;
+		
+		var theUrl = "http://localhost:8080/formswebapp/resources/transcript";
+
+		var theData = "firstTermAttended="+firstterm+"&"+"lastTermAttended="+lastterm+"&"+"toBeCompleted="+toBeCompleted
+				+"&"+"firstYearAttended="+yearfirst+"&"+"lastYearAttended="+yearlast+"&";
+
+		for(var i=1; i<= mailnum; i++){
+			var numtrans = document.getElementById("numtrans"+i).value;
+			var name = document.getElementById("name"+i).value;
+			var address = document.getElementById("address"+i).value;
+			if(i==1)
+				theData += "numtrans1="+numtrans+"&"+"name1="+name+"&"+"address1="+address;
+			if(i==2)
+				theData += "numtrans2="+numtrans+"&"+"name2="+name+"&"+"address2="+address;
+			if(i==3)
+				theData += "numtrans3="+numtrans+"&"+"name3="+name+"&"+"address3="+address;
+		}	
+
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			datatype: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+		});
+	});
+	
+	 $("#btnLogout").click(function() {
+                        alert("Logging out...");
+						var c = document.cookie;
+                        var theData = c;
+
+						document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+						
+                        alert("Sending: " + theData);
+                        $.ajax({
+                            url: "http://localhost:8080/formswebapp/resources/authsession/" + c,
+                            type: "DELETE",
+                            dataType: "text",
+                            data: theData,
+							
+							
+							
+                            success: function(result, status, jqxhr) {
+                                alert("success: " + status);
+                                var userArray = JSON.parse(result);
+                                //alert(userArray);
+                                var output = "<h3>Log Out</h3>";
+                                window.location.replace("login.html")
+
+                             $('.HiddenInput').val(output);
+                            },
+                            error: function(xhr, status, errorThrown) {
+                                //alert("error: " + status + " e: " + errorThrown);
+                            }
+
+                        });
+                    });
+
+});
+</script>
+</head>
+<body>
+
+<!--Header-->
+	<div class = "navbar navbar-inverse navbar-static-top">
+		<div class="container">
+			<div class = "navbar-header">
+				<div class="tut-container-img">
+						<img class="img-responsive" src="cculogo.png" alt=""></a>
+					</div>
+						
+				<button class = "navbar-toggle" data-toggle = "collapse" data-target = ".navHeaderCollapse">
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+					<span class = "icon-bar"></span>
+				</button><!--Create button for mobile site-->
+			</div>
+			<div class = "collapse navbar-collapse navHeaderCollapse">
+				<ul class = "nav navbar-nav navbar-right">
+					<li><a href = "user.html">Home</a></li>
+					
+					<li class = "dropdown">
+						<a href = "#" class = "dropdown-toggle" data-toggle ="dropdown">All Forms<b class="caret"></b></a>
+						<ul class = "dropdown-menu">
+							<li><a href = "courserepeat.html">Course Repeat Form</a></li>
+							<li><a href = "coursesub.html">Course Substitution Form</a></li>
+							<li><a href = "transcript.html"> Transcript Form</a></li>
+							<li><a href = "specialpermission.html"> Special Permission Form</a></li>
+						</ul>
+					</li>
+					
+					<li class = "dropdown">
+						<a href = "#" class = "dropdown-toggle" data-toggle ="dropdown">Social Media <b class="caret"></b></a>
+						<ul class = "dropdown-menu">
+							<li><a href = "http://twitter.com">Twitter</a></li>
+							<li><a href = "http://facebook.com">Facebook</a></li>
+							<li><a href = "https://plus.google.com/">Google+</a></li>
+							<li><a href = "http://instagram.com">Instagram</a></li>
+						</ul>
+					</li>
+					<li><a href = "#about" data-toggle ="modal">About</a></li>
+					<li><a href = "#contact" data-toggle ="modal">Contact</a></li>
+					<li>
+						<a class="navbar-brand" href="setting.html">
+							<i class="glyphicon glyphicon-cog"></i>
+						</a>
+					</li>
+					<li>
+						<button type="button" id="btnLogout" class="btn btn-default navbar-btn">Logout</button
+					</li>
+					<li>
+						<form class="navbar-form" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+							<div class="input-group-btn">
+								<button class="btn btn-default" type="search"><i class="glyphicon glyphicon-search"></i></button>
+							</div>
+						</div>
+						</form>
+						
+					</li>
+
+				</ul>
+			</div>	
+		</div>
+	</div>		
+	
+	<h2>Transcript Request Form</h2>
+	<br>
+	<ul>
+		<li>Coastal Carolina University will issue up to six standard service transcripts per student per calendar year at no charge. A non-refundable fee of $5.00 per copy must accompany subsequent requests that are made within the same calendar year. Please make your check or money order payable to Coastal Carolina University at the Office of Student Accounts located at 100 East Chanticleer Drive (Baxley Hall). Enhanced service official transcripts may be ordered for additional charges - please see the Office of the Registrar's website for details.</li>
+		<hr>
+		<ul><i class="glyphicon glyphicon-asterisk">NOTE:</i> If you have a hold on your account with the University, it may prevent this transcript request from being processed. The submitted request form will remain valid only for a period of thirty days, in order to allow you to clear the hold that prevents processing.</ul>
+		<ul>Transcript(s) will not be released to/for anyone except students, unless appropriately requested in writing by the student. Please present a picture identification when requesting transcripts in person.</ul>
+	</ul>
+	<br>
+	<div class = "container">
+		<div class = "row">
+			<div class = "col-lg-9">
+				<div class ="panel panel-default">
+					<div class ="panel-body">
+					<p></p>
+					<h3><b>Student Information</b></h3>
+					<hr>
+					<div=class="container">
+						<div class = "column">
+							<div class = "col-xs-6 col-md-4">
+								<div id="firstName"><b>First Name:</b>&nbsp </div>	
+								<div id="lastName"><b>Last Name:</b>&nbsp</div>
+								<div id="middleName"><b>Middle Name:</b>&nbsp</div>	
+								<div id="id"><b>Id:</b>&nbsp</div>
+								<div id="telephone"><b>Telephone:</b>&nbsp</div>	
+							</div>
+							<div class = "col-xs-6 col-md-4">
+								<div id="streetAddress"><b>Street Address:</b>&nbsp</div>
+								<div id="city"><b>City:</b>&nbsp</div>	
+								<div id="state"><b>State:</b>&nbsp</div>
+								<div id="zip"><b>Zip:</b>&nbsp</div>	
+								<div id="major"><b>Major:</b>&nbsp</div>
+								<div id="minor"><b>Minor:</b>&nbsp</div>	
+								<div id="catalogYear"><b>Catalog:</b>&nbsp</div>
+							</div>
+						</div>			
+					</div>	
+				</div>
+			</div>
+		</div>	
+	</div>
+	<ul>
+		<ul>Processing dates: (check all that apply)&nbsp <i class="glyphicon glyphicon-ok"></i></ul>
+	</ul>
+	<br>
+	
+<div class="container1">	
+	<div class = "container">
+		<div class = "row">
+			<div class = "col-lg-9">
+				<div class ="panel panel-default">
+					<div class ="panel-body">
+						<div class= "page-header">
+						<p></p>
+						<h3><b>Course Information</b></h3>
+						<hr>
+						
+						<form class="form-horizontal" role="form" autocomplete="on" >
+							<div class="form-group">
+							<label for="repeat" class="col-lg-2 control-label">* Date/Term work to be completed </label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="toBeCompleted" value="" required>
+							
+								</div>
+							</div>
+							<div class="form-group">
+							<label for="grade" class="col-lg-2 control-label">* First term attended: Year </label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="yearfirst" value="" required>
+									<input type="radio" name="firstterm" value="1">Fall&nbsp
+									<input type="radio" name="firstterm" value="2">Spring&nbsp
+									<input type="radio" name="firstterm" value="3">May&nbsp
+									<input type="radio" name="firstterm" value="4">S1&nbsp
+									<input type="radio" name="firstterm" value="5">S2<br>
+								</div>
+							</div>
+							<div class="form-group">
+							<label for="termRepeat" class="col-lg-2 control-label">* Last term attended: Year</label>
+								<div class="col-sm-4">
+									<input type="text" class ="form-control" id="yearlast" value="" placeholder="Spring"  required>
+									<input type="radio" name="lastterm" value="1">Fall&nbsp
+									<input type="radio" name="lastterm" value="2">Spring&nbsp
+									<input type="radio" name="lastterm" value="3">May&nbsp
+									<input type="radio" name="lastterm" value="4">S1&nbsp
+									<input type="radio" name="lastterm" value="5">S2<br>
+								</div>
+							</div>
+							<p>(*) Indicates required field.</p>
+							<p><b>Note:</b>&nbspIf you attended before July 1, 1993, please contact the University of South Carolina at 803-777-5555.</p>
+							<hr>
+							<p></p>
+							<h3><b>Mailing Information</b></h3>
+							
+							<p></p>
+							
+							<div class="form-group">
+							<label for="mailto" class="col-lg-2 control-label">* Number of transcripts to be sent</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" id="numtrans1" value="" required>
+								</div>
+							</div>
+							
+							<div class="form-group">
+							<label for="mailto" class="col-lg-2 control-label">* Name</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" id="name1" value="" required>
+								</div>
+							</div>
+								
+							<div class="form-group">
+							<label for="mailto" class="col-lg-2 control-label">* Address </label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" id="address1" value="" required>	
+								</div>
+							</div>		
+							<h5><b>Note:</b>&nbspMail transcripts to: (max 5)</h5><br>			
+						
+								
+									
+								<p></p>
+								<div id="mailto2"></div>
+								<button  class="btn btn-inverse" id="add" type="button">Click to add a recipient</button>
+								<p></p>
+								<button class="btn btn-inverse" id="remove" type="button">Click to reset recipient list</button>
+								<br>
+								<p></p>
+
+							
+							
+							<div class = "modal-footer">
+							<a class = "btn btn-default" data-dismiss = "modal">Close</a>
+								<button class = "btn btn-default" type="reset">Clear</button>
+							<button class ="btn btn-inverse" id="submit" type="submit" formenctype="multipart/form-data" formaction="user.html">Submit</button>
+						
+							</div>						  
+						</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class = "col-lg-3">
+				<div class="list-group">
+					<a href ="#" class ="list-group-item">
+						<p class= "list-group-item-text">
+						
+							<img src="img/chant.jpg">
+						
+						</p>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+
+	<div id= "btt">	
+	<A HREF="#top" class="btn btn-default">Back To Top</A>
+	</div>						
+	<div class = "navbar navbar-inverse navbar-fixed-bottom">
+		<div>
+			<p class = "navbar-text pull-right">2014 Coastal Carolina University | P.O. Box 261954, Conway, SC 29528-6054 USA | +1 843-347-3161</p>
+		</div>
+	</div>
+							
+
+</body>
+</html>
